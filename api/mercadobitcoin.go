@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"encoding/json"
 	"time"
-	. "github.com/bctrader/coin"
 )
 
 type Ticker struct {
@@ -26,10 +25,10 @@ var webClient = &http.Client {
 	Timeout: time.Second * 10,
 }
 
-func GetPrice(coin Coin) Ticker {
+func GetPrice(coin string) Ticker {
 	baseurl := viper.GetString("MERCADO_BITCOIN_BASE_URL")
 
-	res, err := webClient.Get(baseurl + "/" + string(coin) + "/ticker/")
+	res, err := webClient.Get(baseurl + "/" + coin + "/ticker/")
 
 	if err != nil {
 		panic(err)

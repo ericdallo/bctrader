@@ -3,13 +3,15 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/bctrader/api"
-	Coin "github.com/bctrader/coin"
 	"fmt"
 	"time"
 )
 
+var coin string = "BTC"
+
 func init() {
 	rootCmd.AddCommand(priceCmd)
+	priceCmd.Flags().StringVarP(&coin, "coin", "c", "", "Coin to show current price")
 }
 
 var priceCmd = &cobra.Command {
@@ -23,8 +25,6 @@ var priceCmd = &cobra.Command {
 
 func showPrice(args []string) {
 
-	coin := Coin.BTC
-	
 	price := api.GetPrice(coin)
 
 	fmt.Printf("%-15s%-10s\n", "COIN", coin + " (R$)")
