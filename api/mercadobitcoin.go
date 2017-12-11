@@ -26,7 +26,7 @@ var webClient = &http.Client {
 }
 
 func GetPrice(coin string) Ticker {
-	baseurl := viper.GetString("MERCADO_BITCOIN_BASE_URL")
+	baseurl := viper.GetString("mercado_bitcoin_base_url")
 
 	res, err := webClient.Get(baseurl + "/" + coin + "/ticker/")
 
