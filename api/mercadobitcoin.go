@@ -1,10 +1,11 @@
 package api
 
 import (
+	"github.com/spf13/viper"
 	"net/http"
 	"encoding/json"
 	"time"
-	
+	. "github.com/bctrader/coin"
 )
 
 type Ticker struct {
@@ -14,7 +15,7 @@ type Ticker struct {
     Last	  string
     Buy		  string
     Sell 	  string
-    Date	  int
+    Date	  int64
 }
 
 type Price struct {
@@ -25,8 +26,10 @@ var webClient = &http.Client {
 	Timeout: time.Second * 10,
 }
 
-func GetPrice() Ticker {
-	res, err := webClient.Get("https://www.mercadobitcoin.net/api/BTC/ticker/")	
+func GetPrice(coin Coin) Ticker {
+	baseurl := viper.GetString("MERCADO_BITCOIN_BASE_URL")
+
+	res, err := webClient.Get(baseurl + "/" + string(coin) + "/ticker/")
 
 	if err != nil {
 		panic(err)

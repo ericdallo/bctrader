@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"os"
+	"log"
 )
 
 var (
@@ -19,6 +21,13 @@ var rootCmd = &cobra.Command {
 }
 
 func Execute(version string) {
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Panic(err)
+	}
+
 	VERSION = version
 
 	if err := rootCmd.Execute(); err != nil {
