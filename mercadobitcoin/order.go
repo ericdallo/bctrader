@@ -52,10 +52,10 @@ type Operation struct {
 }
 
 func Print(order Order) {
-	fmt.Printf("\t\t%-30s%-10d\n", "Id", order.OrderId)
+	fmt.Printf("%-32s%-10d\n", "Id", order.OrderId)
 	fmt.Printf("\t\t%-30s%-10s\n", "Coin Pair", order.CoinPair)
-	fmt.Printf("\t\t%-30s%-10d\n", "Type", order.OrderType)
-	fmt.Printf("\t\t%-30s%-10d\n", "Status", order.Status)
+	fmt.Printf("\t\t%-30s%-10s\n", "Type", OrderType(order.OrderType).String())
+	fmt.Printf("\t\t%-30s%-10s\n", "Status", OrderStatus(order.Status).String())
 	fmt.Printf("\t\t%-30s%-10t\n", "Has fills", order.HasFills)
 	fmt.Printf("\t\t%-30s%-10s\n", "Quantity (Ƀ)", order.Quantity)
 	fmt.Printf("\t\t%-30s%-10.2f\n", "Limit price (R$)", toNumber(order.LimitPrice))
@@ -72,6 +72,7 @@ func Print(order Order) {
 		fmt.Printf("\t\t└─ %-30s%-10s\n", "FeeRate ", operation.FeeRate)
 		fmt.Printf("\t\t└─ %-30s%-10s\n", "ExecutionTimestamp", operation.ExecutionTimestamp)
 	}
+	fmt.Println()
 }
 
 func toNumber(priceInString string) float64 {

@@ -64,6 +64,29 @@ func BuyOrder(quantity string, limitPrice string) Order {
     return orderResponse.ResponseData.Order
 }
 
+func SellOrder(quantity string, limitPrice string) Order {
+	validateCredentials()
+
+	params := url.Values{}
+	params.Add("quantity", quantity)
+	params.Add("limit_price", limitPrice)
+	params.Add("coin_pair", "BRLBTC")
+    params.Add("tapi_method", "place_sell_order")
+    params.Add("tapi_nonce", strconv.FormatInt(time.Now().UnixNano(), 10))
+
+    res := requestTapi(params)
+
+    orderResponse := new(OrderResponse)
+
+	json.NewDecoder(res.Body).Decode(orderResponse)
+
+	defer res.Body.Close()
+
+	validateResponse(orderResponse.StatusCode, orderResponse.ErrorMessage)
+
+    return orderResponse.ResponseData.Order
+}
+
 func GetPrice(coin string) Price {
 	baseurl := BaseURL()
 
