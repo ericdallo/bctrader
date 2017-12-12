@@ -12,8 +12,8 @@ var tapi_secret string
 
 func init() {
 	configureCmd.AddCommand(mercadobitcoinCmd)
-	mercadobitcoinCmd.Flags().StringVarP(&tapi_id, "tapi_id", "i", "", "TAPI_ID of your account")
-	mercadobitcoinCmd.Flags().StringVarP(&tapi_secret, "tapi_secret", "s", "", "TAPI_SECRET of your account")
+	mercadobitcoinCmd.Flags().StringVarP(&tapi_id, "tapi-id", "i", "", "TAPI_ID of your account")
+	mercadobitcoinCmd.Flags().StringVarP(&tapi_secret, "tapi-secret", "s", "", "TAPI_SECRET of your account")
 }
 
 type config struct {

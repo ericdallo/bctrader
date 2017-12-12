@@ -1,11 +1,29 @@
 package mercadobitcoin
 
-type OrderResponse struct {
-	ResponseData ResponseData `json:"response_data"`
+import (
+	"fmt"
+	"time"
+	"strconv"
+)
+
+type OrdersResponse struct {
+	ResponseData 	OrdersResponseData `json:"response_data"`
+	StatusCode      int  			   `json:"status_code"`
+	ErrorMessage	string			   `json:"error_message"`
 }
 
-type ResponseData struct {
-	Orders 		[]Order 	 `json:"orders"`
+type OrdersResponseData struct {
+	Orders 				[]Order 	 `json:"orders"`
+}
+
+type OrderResponse struct {
+	ResponseData OrderResponseData `json:"response_data"`
+	StatusCode      int  			   `json:"status_code"`
+	ErrorMessage	string			   `json:"error_message"`
+}
+
+type OrderResponseData struct {
+	Order 				Order 	`json:"order"`
 }
 
 type Order struct {
@@ -31,4 +49,33 @@ type Operation struct {
 	Price				string	`json:"price"`
 	FeeRate				string	`json:"fee_rate"`
 	ExecutionTimestamp	string	`json:"execution_timestamp"`
+}
+
+func Print(order Order) {
+	fmt.Printf("\t\t%-30s%-10d\n", "Id", order.OrderId)
+	fmt.Printf("\t\t%-30s%-10s\n", "Coin Pair", order.CoinPair)
+	fmt.Printf("\t\t%-30s%-10d\n", "Type", order.OrderType)
+	fmt.Printf("\t\t%-30s%-10d\n", "Status", order.Status)
+	fmt.Printf("\t\t%-30s%-10t\n", "Has fills", order.HasFills)
+	fmt.Printf("\t\t%-30s%-10s\n", "Quantity (Ƀ)", order.Quantity)
+	fmt.Printf("\t\t%-30s%-10.2f\n", "Limit price (R$)", toNumber(order.LimitPrice))
+	fmt.Printf("\t\t%-30s%-10s\n", "Executed quantity (Ƀ)", order.ExecutedQuantity)
+	fmt.Printf("\t\t%-30s%-10.2f\n", "Executed price avg (R$)", toNumber(order.ExecutedPriceAvg))
+	fmt.Printf("\t\t%-30s%-10s\n", "Fee (Ƀ)", order.Fee)
+	fmt.Printf("\t\t%-30s%-10s\n", "Created at", time.Unix(order.CreatedTimestamp, 0))
+	fmt.Printf("\t\t%-30s%-10s\n", "Updated at", time.Unix(order.UpdatedTimestamp, 0))
+
+	for _, operation := range order.Operations {
+		fmt.Printf("\t\t%-30s%-10d\n", "OperationId", operation.OperationId)
+		fmt.Printf("\t\t└─ %-30s%-10s\n", "Quantity (Ƀ)", operation.Quantity)
+		fmt.Printf("\t\t└─ %-30s%-10s\n", "Price (R$)", operation.Price)
+		fmt.Printf("\t\t└─ %-30s%-10s\n", "FeeRate ", operation.FeeRate)
+		fmt.Printf("\t\t└─ %-30s%-10s\n", "ExecutionTimestamp", operation.ExecutionTimestamp)
+	}
+}
+
+func toNumber(priceInString string) float64 {
+	number, _ := strconv.ParseFloat(priceInString, 64)
+
+	return number;
 }
