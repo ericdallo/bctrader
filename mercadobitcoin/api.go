@@ -1,15 +1,11 @@
-package api
+package mercadobitcoin
 
 import (
-	MercadobitcoinConfig "github.com/bctrader/config"
-
 	"net/http"
 	"net/url"
 	"encoding/json"
 	"time"
-	"fmt"
 	"strings"
-	"io/ioutil"
 	"strconv"
 	"log"
 	"os"
@@ -23,10 +19,10 @@ var webClient = &http.Client {
 	Timeout: time.Second * 10,
 }
 
-func GetOrder() {
+func GetOrders() []Order {
 	validateCredentials()
 
-	uri := MercadobitcoinConfig.BaseURL() + NEGOCIATION_API_PATH
+	uri := BaseURL() + NEGOCIATION_API_PATH
 
 	params := url.Values{}
 	params.Add("coin_pair", "BRLBTC")
@@ -37,35 +33,25 @@ func GetOrder() {
 
 	req, err := http.NewRequest("POST", uri, strings.NewReader(paramsEncoded))
     req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-    req.Header.Set("TAPI-ID", MercadobitcoinConfig.TapiId())
-    req.Header.Set("TAPI-MAC", MercadobitcoinConfig.TapiMacFor(NEGOCIATION_API_PATH + "?" + paramsEncoded))
+    req.Header.Set("TAPI-ID", TapiId())
+    req.Header.Set("TAPI-MAC", TapiMacFor(NEGOCIATION_API_PATH + "?" + paramsEncoded))
 
     resp, err := webClient.Do(req)
     if err != nil {
         panic(err)
     }
+
     defer resp.Body.Close()
 
-    body, _ := ioutil.ReadAll(resp.Body)
-    fmt.Println("response Body:", string(body))
+    orderResponse := new(OrderResponse)
+
+	json.NewDecoder(resp.Body).Decode(orderResponse)
+
+    return orderResponse.ResponseData.Orders
 }
 
-type Ticker struct {
-	High      string
-    Low		  string
-    Vol	  	  string
-    Last	  string
-    Buy		  string
-    Sell 	  string
-    Date	  int64
-}
-
-type Price struct {
-	Ticker Ticker
-}
-
-func GetPrice(coin string) Ticker {
-	baseurl := MercadobitcoinConfig.BaseURL()
+func GetPrice(coin string) Price {
+	baseurl := BaseURL()
 
 	res, err := webClient.Get(baseurl + "/api/" + coin + "/ticker/")
 
@@ -74,7 +60,7 @@ func GetPrice(coin string) Ticker {
 	}
 	defer res.Body.Close()
 
-	price := new(Price)
+	price := new(PriceTicker)
 
 	json.NewDecoder(res.Body).Decode(price)
 
@@ -82,7 +68,7 @@ func GetPrice(coin string) Ticker {
 }
 
 func validateCredentials() {
-	if !MercadobitcoinConfig.IsCredentialsSetted() {
+	if !IsCredentialsSetted() {
 		log.Printf("tapi_id not configurated, configure with 'bctrader configure [PROVIDER]'")
 		os.Exit(-1)
 	}

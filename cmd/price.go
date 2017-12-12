@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/bctrader/api"
+	"github.com/bctrader/mercadobitcoin"
 	"fmt"
 	"strconv"
 	"time"
@@ -26,7 +26,7 @@ var priceCmd = &cobra.Command {
 
 func ShowPrice(args []string) {
 
-	price := api.GetPrice(coin)
+	price := mercadobitcoin.GetPrice(coin)
 
 	fmt.Printf("%-15s%-10s\n", "COIN", coin + " (R$)")
 	fmt.Printf("%-15s%-10.2f\n", "HIGH", ToNumber(price.High))

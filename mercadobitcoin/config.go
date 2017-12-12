@@ -1,4 +1,4 @@
-package config
+package mercadobitcoin
 
 import (
 	"github.com/spf13/viper"
