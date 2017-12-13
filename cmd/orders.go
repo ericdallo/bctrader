@@ -5,12 +5,27 @@ import (
 	"github.com/bctrader/mercadobitcoin"
 )
 
+var purchasesOnly bool
+var salesOnly bool
+
 func init() {
 	rootCmd.AddCommand(ordersCmd)
+	ordersCmd.Flags().BoolVarP(&purchasesOnly, "purchases-only", "b", false, "Show only buyed orders")
+	ordersCmd.Flags().BoolVarP(&salesOnly, "sales-only", "s", false, "Show only sold orders")
 }
 
 func ListOrders(args[] string) {
-	for _, order := range mercadobitcoin.GetOrders() {
+	var orderType mercadobitcoin.OrderType
+
+	if purchasesOnly {
+		orderType = 1
+	} else if salesOnly {
+		orderType = 2
+	}
+
+	orders := mercadobitcoin.GetOrders(orderType)
+
+	for _, order := range orders {
 		mercadobitcoin.Print(order)
 	}
 }

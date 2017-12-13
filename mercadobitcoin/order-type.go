@@ -15,3 +15,7 @@ var alltypes = [...]string {
 func (otype OrderType) String() string {
 	return alltypes[otype - 1]
 }
+
+func (otype OrderType) Value() int {
+	return int(otype)
+}

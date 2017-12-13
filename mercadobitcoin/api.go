@@ -20,13 +20,17 @@ var webClient = &http.Client {
 	Timeout: time.Second * 10,
 }
 
-func GetOrders() []Order {
+func GetOrders(orderType OrderType) []Order {
 	validateCredentials()
 
 	params := url.Values{}
 	params.Add("coin_pair", "BRLBTC")
 	params.Add("tapi_method", "list_orders")
 	params.Add("tapi_nonce", strconv.FormatInt(time.Now().UnixNano(), 10))
+
+	if int(orderType) != 0 {
+		params.Add("order_type", string(int(orderType)))
+	}
 
 	res := requestTapi(params)
 
